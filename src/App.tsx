@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Leaf, Globe, Target, CircleDollarSign, BookOpen, 
-  Search, CheckCircle2, ChevronRight, Wind, Sun, 
-  Recycle, Zap, ShieldCheck, ArrowRight, Lightbulb, Map,
+import { useState, useEffect } from 'react';
+import { Fragment } from 'react';
+import {
+  Leaf, Globe, Target, CircleDollarSign, BookOpen,
+  Search, CheckCircle2, Wind, Sun, Zap, ShieldCheck, ArrowRight, Lightbulb, Map,
   FileText, AlertTriangle, Scale, Building2, Droplets,
   BookMarked, Landmark, Milestone, Box, ClipboardCheck,
   Code, Moon, PieChart, Network, ChevronDown, ChevronUp
@@ -25,7 +25,7 @@ const dictionary = [
   { term: '藍碳 (Blue Carbon)', desc: '考點：指由「海洋與沿海生態系」(如紅樹林、海草床、鹽沼) 吸收並儲存的碳，吸碳效率極高。' },
   { term: '黃碳 (Yellow Carbon)', desc: '考點：指儲存於「農域與土壤」中的碳，透過友善環境的農耕方式可增加其碳匯量。' },
   { term: '氣候敏感度 (Climate Sensitivity)', desc: '考點：大氣中CO2濃度倍增時，全球平均表面溫度的預期升幅。' },
-  
+
   // --- 國際公約與倡議 ---
   { term: 'UNFCCC (聯合國氣候變化綱要公約)', desc: '考點：1992年地球高峰會通過，確立了應對氣候變遷的全球框架與「共同但有區別的責任」原則。' },
   { term: 'COP (締約方大會)', desc: '考點：Conference of the Parties。UNFCCC的最高決策機構，每年召開一次國際氣候會議。' },
@@ -38,7 +38,7 @@ const dictionary = [
   { term: 'NDC (國家自定貢獻)', desc: '考點：各締約國依據《巴黎協定》自主提出的國家減碳目標，承諾每5年更新且須提高企圖心(棘輪機制)。' },
   { term: 'CBDR (共同但有區別的責任)', desc: '考點：考量已開發國家歷史排放較多，應承擔比開發中國家更大的氣候減碳責任與資金協助義務。' },
   { term: '全球盤點 (Global Stocktake)', desc: '考點：巴黎協定機制。每5年進行一次，評估全球在實現氣候目標上的集體進展(首次於2023年COP28完成)。' },
-  
+
   // --- 永續發展與 SDGs ---
   { term: '永續發展 (Sustainable Development)', desc: '考點：1987年《布倫特蘭報告》定義：「滿足當代需求，同時不損及後代滿足其需求的發展。」' },
   { term: 'MDGs (千禧年發展目標)', desc: '考點：SDGs的前身(2000-2015)，當年主要著重於開發中國家的脫貧、疾病等8項目標。' },
@@ -104,7 +104,7 @@ const dictionary = [
   { term: '基線情境 (Baseline Scenario)', desc: '考點：減量專案中，假設「沒有執行該減量專案」時的原始排放狀況，用於比對計算實際減碳量。' },
   { term: '洩漏 (Leakage)', desc: '考點：減量專案雖在邊界內減少了排放，卻導致邊界外排放量增加的現象(需扣除)。' },
   { term: '永久性 (Permanence)', desc: '考點：專案產生的減碳或碳匯效果必須能長期維持，特別針對自然碳匯(如森林大火可能導致逆轉風險)。' },
-  
+
   // --- 產品碳足跡與LCA ---
   { term: 'LCA (生命週期評估)', desc: '考點：Life Cycle Assessment。ISO 14067 核心基礎，評估產品從原料、製造、配送、使用到廢棄的環境衝擊。' },
   { term: 'PCR (產品類別規則)', desc: '考點：Product Category Rules。同類產品進行碳足跡盤查時的專屬計算指引與規則，確保具備客觀可比較性。' },
@@ -217,7 +217,7 @@ const dictionary = [
   { term: 'PACT (碳透明度夥伴關係)', desc: '考點：WBCSD發起。建立標準化框架解決供應鏈(範疇三)數據不透明、格式不一的問題，推動初級數據交換。' },
   { term: '初級數據交換 (Primary Data Exchange)', desc: '考點：PACT核心精神。上下游企業直接透過API串接傳輸真實碳排數據，擺脫對產業平均資料庫的依賴。' },
   { term: '循環經濟 (Circular Economy)', desc: '考點：打破「開採-製造-丟棄」的線性模式，透過重新設計使資源能持續循環利用(如C2C搖籃到搖籃)。' },
-  
+
   // --- 台灣政策與法規專區 ---
   { term: '氣候變遷因應法', desc: '考點：台灣氣候母法(原溫減法修正)。2050淨零排放入法，明訂碳費徵收機制、碳交所及氣候調適專章。' },
   { term: '溫室氣體管理基金 (溫管基金)', desc: '考點：法規明訂碳費收入必須「專款專用」放入此基金，專門用於補助減量工作與氣候調適。' },
@@ -235,18 +235,30 @@ const dictionary = [
 
 // --- 共用組件 ---
 
-const SubTabs = ({ tabs, activeTab, setActiveTab }) => (
+interface TabItem {
+  id: string;
+  label: string;
+}
+
+const SubTabs = ({
+  tabs,
+  activeTab,
+  setActiveTab,
+}: {
+  tabs: TabItem[];
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}) => (
   <div className="flex overflow-x-auto border-b border-slate-200 dark:border-slate-800 mb-6 pb-2 hide-scrollbar">
     <div className="flex gap-2">
-      {tabs.map((tab) => (
+      {tabs.map((tab: TabItem) => (
         <button
           key={tab.id}
           onClick={() => setActiveTab(tab.id)}
-          className={`px-5 py-2.5 rounded-t-lg font-bold text-sm whitespace-nowrap transition-colors ${
-            activeTab === tab.id 
-              ? 'bg-emerald-600 text-white shadow-sm' 
+          className={`px-5 py-2.5 rounded-t-lg font-bold text-sm whitespace-nowrap transition-colors ${activeTab === tab.id
+              ? 'bg-emerald-600 text-white shadow-sm'
               : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-          }`}
+            }`}
         >
           {tab.label}
         </button>
@@ -255,8 +267,20 @@ const SubTabs = ({ tabs, activeTab, setActiveTab }) => (
   </div>
 );
 
-const QuizModule = ({ quizData, unitTitle, onAnswer, qIndex }) => {
-  const [selected, setSelected] = useState(null);
+interface QuizModuleProps {
+  quizData: QuizQuestion;
+  unitTitle: string;
+  onAnswer: (index: number, correct: boolean) => void;
+  qIndex: number;
+}
+
+const QuizModule = ({
+  quizData,
+  unitTitle,
+  onAnswer,
+  qIndex,
+}: QuizModuleProps) => {
+  const [selected, setSelected] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
   // 當題目切換(qIndex改變或本身更新)時，重置作答狀態
@@ -276,15 +300,14 @@ const QuizModule = ({ quizData, unitTitle, onAnswer, qIndex }) => {
       {unitTitle && <div className="text-emerald-300 text-sm font-bold mb-4 tracking-wider">{unitTitle}</div>}
       <p className="text-lg font-medium mb-6 leading-relaxed">{String(quizData.question)}</p>
       <div className="space-y-3">
-        {quizData.options.map((opt, idx) => (
+        {quizData.options.map((opt: string, idx: number) => (
           <button
             key={idx}
             onClick={() => !submitted && setSelected(idx)}
-            className={`w-full text-left px-5 py-4 rounded-xl border-2 transition-all ${
-              selected === idx 
-                ? 'border-emerald-500 bg-emerald-900/30' 
+            className={`w-full text-left px-5 py-4 rounded-xl border-2 transition-all ${selected === idx
+                ? 'border-emerald-500 bg-emerald-900/30'
                 : 'border-slate-600 dark:border-slate-700 bg-slate-700 dark:bg-slate-800 hover:border-slate-400'
-            } ${submitted && idx === quizData.answer ? 'bg-emerald-600 border-emerald-400' : ''} 
+              } ${submitted && idx === quizData.answer ? 'bg-emerald-600 border-emerald-400' : ''} 
               ${submitted && selected === idx && selected !== quizData.answer ? 'bg-red-900/50 border-red-500' : ''}`}
           >
             {String(opt)}
@@ -292,7 +315,7 @@ const QuizModule = ({ quizData, unitTitle, onAnswer, qIndex }) => {
         ))}
       </div>
       {!submitted ? (
-        <button 
+        <button
           onClick={() => {
             setSubmitted(true);
             if (onAnswer) onAnswer(qIndex, selected === quizData.answer);
@@ -305,7 +328,7 @@ const QuizModule = ({ quizData, unitTitle, onAnswer, qIndex }) => {
       ) : (
         <div className={`mt-6 p-5 rounded-xl border ${selected === quizData.answer ? 'bg-emerald-900/50 border-emerald-500' : 'bg-orange-900/50 border-orange-500'}`}>
           <p className="font-bold text-lg mb-2 flex items-center gap-2">
-            {selected === quizData.answer ? <><CheckCircle2 className="text-emerald-400"/> 答對了！這是一定要拿下的基本分。</> : <><AlertTriangle className="text-orange-400"/> 答錯囉！請務必熟記下方解析。</>}
+            {selected === quizData.answer ? <><CheckCircle2 className="text-emerald-400" /> 答對了！這是一定要拿下的基本分。</> : <><AlertTriangle className="text-orange-400" /> 答錯囉！請務必熟記下方解析。</>}
           </p>
           <p className="text-slate-300 leading-relaxed">{String(quizData.explanation)}</p>
         </div>
@@ -318,7 +341,7 @@ const QuizModule = ({ quizData, unitTitle, onAnswer, qIndex }) => {
 
 const Section1 = () => {
   const [subTab, setSubTab] = useState('nouns');
-  
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-6">
@@ -329,19 +352,19 @@ const Section1 = () => {
         <p className="text-slate-500 dark:text-slate-400 mt-3 text-lg">必考重點：核心名詞定義、氣候變遷因應法條文、全球公約演進</p>
       </header>
 
-      <SubTabs 
+      <SubTabs
         tabs={[
           { id: 'nouns', label: '核心名詞深度檢視' },
           { id: 'law', label: '我國《氣候變遷因應法》' },
           { id: 'global', label: '全球氣候公約歷程' }
-        ]} 
-        activeTab={subTab} 
-        setActiveTab={setSubTab} 
+        ]}
+        activeTab={subTab}
+        setActiveTab={setSubTab}
       />
 
       {subTab === 'nouns' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2"><BookMarked className="text-blue-600 dark:text-blue-400"/> 考前必背：核心名詞解析</h3>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2"><BookMarked className="text-blue-600 dark:text-blue-400" /> 考前必背：核心名詞解析</h3>
           <div className="grid md:grid-cols-2 gap-5">
             <div className="p-5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 rounded-2xl hover:border-blue-300 transition-colors shadow-sm">
               <h4 className="font-black text-blue-800 dark:text-blue-300 text-lg mb-1">SDGs (聯合國永續發展目標)</h4>
@@ -361,7 +384,7 @@ const Section1 = () => {
             <div className="p-5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 rounded-2xl hover:border-blue-300 transition-colors shadow-sm">
               <h4 className="font-black text-blue-800 dark:text-blue-300 text-lg mb-1">Mitigation (減量) vs. Adaptation (調適)</h4>
               <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-2">氣候變遷因應法兩大主軸</p>
-              <p className="text-sm text-slate-700 dark:text-slate-300"><strong>減量：</strong>從源頭減少溫室氣體排放或增加碳匯（治本）。<br/><strong>調適：</strong>因應已發生的氣候變遷衝擊，建立韌性、減少災害與風險（治標）。</p>
+              <p className="text-sm text-slate-700 dark:text-slate-300"><strong>減量：</strong>從源頭減少溫室氣體排放或增加碳匯（治本）。<br /><strong>調適：</strong>因應已發生的氣候變遷衝擊，建立韌性、減少災害與風險（治標）。</p>
             </div>
             <div className="p-5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 rounded-2xl md:col-span-2 hover:border-blue-300 transition-colors shadow-sm">
               <h4 className="font-black text-blue-800 dark:text-blue-300 text-lg mb-1">Just Transition (公正轉型)</h4>
@@ -374,7 +397,7 @@ const Section1 = () => {
 
       {subTab === 'law' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2"><Scale className="text-emerald-600 dark:text-emerald-400"/> 條文考點解析</h3>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2"><Scale className="text-emerald-600 dark:text-emerald-400" /> 條文考點解析</h3>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-2xl border border-blue-100 dark:border-blue-900/50">
               <div className="text-blue-800 dark:text-blue-300 font-black text-xl mb-2 border-b border-blue-200 dark:border-blue-800/50 pb-2">第 4 條：2050 淨零入法</div>
@@ -398,7 +421,7 @@ const Section1 = () => {
 
       {subTab === 'global' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2"><Milestone className="text-indigo-600 dark:text-indigo-400"/> 必考公約發展時間軸</h3>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center gap-2"><Milestone className="text-indigo-600 dark:text-indigo-400" /> 必考公約發展時間軸</h3>
           <div className="relative border-l-4 border-indigo-200 dark:border-indigo-800/50 ml-4 md:ml-1/2 space-y-12 py-4">
             {[
               { year: '1987', title: '《我們共同的未來》', subtitle: 'Brundtland Report', desc: '布倫特蘭委員會發布報告，首次明確定義「永續發展」：滿足當代需求，同時不損及後代滿足其需求的發展。' },
@@ -444,15 +467,15 @@ const Section2 = () => {
         <p className="text-slate-500 dark:text-slate-400 mt-3 text-lg">必考重點：ISO 14064-1組織盤查、ISO 14067產品碳足跡、邊界劃分與生命週期</p>
       </header>
 
-      <SubTabs 
+      <SubTabs
         tabs={[
           { id: 'iso14064', label: 'ISO 14064-1 組織碳盤查' },
           { id: 'categories', label: '盤查邊界：六大類別解析' },
           { id: 'iso14067', label: 'ISO 14067 產品碳足跡' },
           { id: 'family', label: 'ISO 14060 家族標準整理' }
-        ]} 
-        activeTab={subTab} 
-        setActiveTab={setSubTab} 
+        ]}
+        activeTab={subTab}
+        setActiveTab={setSubTab}
       />
 
       {subTab === 'iso14064' && (
@@ -500,68 +523,68 @@ const Section2 = () => {
 
       {subTab === 'categories' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-           <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6 bg-slate-100 dark:bg-slate-700 p-4 rounded-xl border border-slate-300 dark:border-slate-600">ISO 14064-1:2018 六大報告邊界類別</h3>
-           <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-5 border-2 border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20 rounded-2xl">
-                 <h4 className="font-black text-red-800 dark:text-red-400 text-lg mb-2">類別 1：直接排放與移除</h4>
-                 <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">【強制量化】對應舊版 Scope 1</p>
-                 <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
-                    <li>固定燃燒 (發電機柴油)</li>
-                    <li>移動燃燒 (公務車汽油)</li>
-                    <li>製程排放 (化學反應)</li>
-                    <li>逸散排放 (冷媒、化糞池)</li>
-                    <li>土地利用變更 / 林業</li>
-                 </ul>
-              </div>
-              <div className="p-5 border-2 border-yellow-200 dark:border-yellow-900/50 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl">
-                 <h4 className="font-black text-yellow-800 dark:text-yellow-500 text-lg mb-2">類別 2：輸入能源間接排放</h4>
-                 <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">【依重大性準則量化】對應舊版 Scope 2</p>
-                 <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
-                    <li>外購電力 (台電電費單)</li>
-                    <li>外購電力以外能源 (蒸汽、熱能)</li>
-                 </ul>
-              </div>
-              <div className="p-5 border-2 border-blue-200 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
-                 <h4 className="font-black text-blue-800 dark:text-blue-400 text-lg mb-2">類別 3：運輸間接排放</h4>
-                 <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">【依重大性準則量化】對應舊版 Scope 3</p>
-                 <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
-                    <li>貨物上下游運輸配送</li>
-                    <li>員工通勤</li>
-                    <li>商務旅行 (高鐵、飛機)</li>
-                 </ul>
-              </div>
-              <div className="p-5 border-2 border-indigo-200 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl">
-                 <h4 className="font-black text-indigo-800 dark:text-indigo-400 text-lg mb-2">類別 4：組織使用產品間接排放</h4>
-                 <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">【依重大性準則量化】採購物料</p>
-                 <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
-                    <li>採購的商品與服務 (原物料、包材)</li>
-                    <li>資本設備 (機器、建築)</li>
-                    <li>營運產生之廢棄物處理</li>
-                 </ul>
-              </div>
-              <div className="p-5 border-2 border-purple-200 dark:border-purple-900/50 bg-purple-50 dark:bg-purple-900/20 rounded-2xl">
-                 <h4 className="font-black text-purple-800 dark:text-purple-400 text-lg mb-2">類別 5：使用組織產品間接排放</h4>
-                 <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">【依重大性準則量化】賣出產品後</p>
-                 <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
-                    <li>產品的使用階段 (吃電產品)</li>
-                    <li>產品的最終處理階段 (廢棄)</li>
-                 </ul>
-              </div>
-              <div className="p-5 border-2 border-slate-200 dark:border-slate-600 bg-slate-100 dark:bg-slate-700/50 rounded-2xl">
-                 <h4 className="font-black text-slate-800 dark:text-slate-200 text-lg mb-2">類別 6：其他間接排放</h4>
-                 <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">無法歸類於3,4,5的其他項目</p>
-                 <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
-                    <li>投資過程 (股權、融資) 產生的碳排</li>
-                 </ul>
-              </div>
-           </div>
+          <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6 bg-slate-100 dark:bg-slate-700 p-4 rounded-xl border border-slate-300 dark:border-slate-600">ISO 14064-1:2018 六大報告邊界類別</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-5 border-2 border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20 rounded-2xl">
+              <h4 className="font-black text-red-800 dark:text-red-400 text-lg mb-2">類別 1：直接排放與移除</h4>
+              <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">【強制量化】對應舊版 Scope 1</p>
+              <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
+                <li>固定燃燒 (發電機柴油)</li>
+                <li>移動燃燒 (公務車汽油)</li>
+                <li>製程排放 (化學反應)</li>
+                <li>逸散排放 (冷媒、化糞池)</li>
+                <li>土地利用變更 / 林業</li>
+              </ul>
+            </div>
+            <div className="p-5 border-2 border-yellow-200 dark:border-yellow-900/50 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl">
+              <h4 className="font-black text-yellow-800 dark:text-yellow-500 text-lg mb-2">類別 2：輸入能源間接排放</h4>
+              <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">【依重大性準則量化】對應舊版 Scope 2</p>
+              <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
+                <li>外購電力 (台電電費單)</li>
+                <li>外購電力以外能源 (蒸汽、熱能)</li>
+              </ul>
+            </div>
+            <div className="p-5 border-2 border-blue-200 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20 rounded-2xl">
+              <h4 className="font-black text-blue-800 dark:text-blue-400 text-lg mb-2">類別 3：運輸間接排放</h4>
+              <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">【依重大性準則量化】對應舊版 Scope 3</p>
+              <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
+                <li>貨物上下游運輸配送</li>
+                <li>員工通勤</li>
+                <li>商務旅行 (高鐵、飛機)</li>
+              </ul>
+            </div>
+            <div className="p-5 border-2 border-indigo-200 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl">
+              <h4 className="font-black text-indigo-800 dark:text-indigo-400 text-lg mb-2">類別 4：組織使用產品間接排放</h4>
+              <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">【依重大性準則量化】採購物料</p>
+              <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
+                <li>採購的商品與服務 (原物料、包材)</li>
+                <li>資本設備 (機器、建築)</li>
+                <li>營運產生之廢棄物處理</li>
+              </ul>
+            </div>
+            <div className="p-5 border-2 border-purple-200 dark:border-purple-900/50 bg-purple-50 dark:bg-purple-900/20 rounded-2xl">
+              <h4 className="font-black text-purple-800 dark:text-purple-400 text-lg mb-2">類別 5：使用組織產品間接排放</h4>
+              <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">【依重大性準則量化】賣出產品後</p>
+              <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
+                <li>產品的使用階段 (吃電產品)</li>
+                <li>產品的最終處理階段 (廢棄)</li>
+              </ul>
+            </div>
+            <div className="p-5 border-2 border-slate-200 dark:border-slate-600 bg-slate-100 dark:bg-slate-700/50 rounded-2xl">
+              <h4 className="font-black text-slate-800 dark:text-slate-200 text-lg mb-2">類別 6：其他間接排放</h4>
+              <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">無法歸類於3,4,5的其他項目</p>
+              <ul className="text-sm text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
+                <li>投資過程 (股權、融資) 產生的碳排</li>
+              </ul>
+            </div>
+          </div>
         </div>
       )}
 
       {subTab === 'iso14067' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
           <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4 flex items-center gap-2">
-            <Box className="text-emerald-600 dark:text-emerald-400 w-7 h-7"/> ISO 14067 產品碳足跡 (PCF)
+            <Box className="text-emerald-600 dark:text-emerald-400 w-7 h-7" /> ISO 14067 產品碳足跡 (PCF)
           </h3>
           <p className="text-slate-700 dark:text-slate-300 mb-8 bg-emerald-50 dark:bg-emerald-900/20 p-5 rounded-xl border border-emerald-100 dark:border-emerald-900/50 text-base leading-relaxed">
             <strong>核心觀念：</strong>有別於 ISO 14064-1 針對「整個組織營運」，ISO 14067 專注於「單一產品或服務」。運用<strong>生命週期評估 (LCA)</strong> 的方法，計算產品從無到有的每一滴碳排放。這也是應對歐盟 CBAM 與國際供應鏈要求（如 Apple 要求供應商提供低碳產品）的關鍵標準。
@@ -591,11 +614,11 @@ const Section2 = () => {
               <ul className="space-y-5 text-sm text-slate-700 dark:text-slate-300">
                 <li>
                   <strong className="text-blue-700 dark:text-blue-300 block text-lg font-black mb-1 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded w-fit">功能單位 (Functional Unit)</strong>
-                  <p className="leading-relaxed mt-2">為具備相關機能之量化績效，確保比較時的基準一致。<br/><strong>考點舉例：</strong>一顆 60W、壽命 1000 小時的 LED 燈泡提供照明的功能。（用於搖籃到墳墓的最終產品）</p>
+                  <p className="leading-relaxed mt-2">為具備相關機能之量化績效，確保比較時的基準一致。<br /><strong>考點舉例：</strong>一顆 60W、壽命 1000 小時的 LED 燈泡提供照明的功能。（用於搖籃到墳墓的最終產品）</p>
                 </li>
                 <li>
                   <strong className="text-orange-700 dark:text-orange-300 block text-lg font-black mb-1 bg-orange-50 dark:bg-orange-900/30 px-3 py-1 rounded w-fit">宣告單位 (Declared Unit)</strong>
-                  <p className="leading-relaxed mt-2">當產品最終功能無法精確定義，或只做「搖籃到大門」評估時使用。<br/><strong>考點舉例：</strong>1 公噸的鋼板、1 公斤的塑膠粒。（後續用途未知）</p>
+                  <p className="leading-relaxed mt-2">當產品最終功能無法精確定義，或只做「搖籃到大門」評估時使用。<br /><strong>考點舉例：</strong>1 公噸的鋼板、1 公斤的塑膠粒。（後續用途未知）</p>
                 </li>
                 <li>
                   <strong className="text-purple-700 dark:text-purple-300 block text-lg font-black mb-1 bg-purple-50 dark:bg-purple-900/30 px-3 py-1 rounded w-fit">產品類別規則 (PCR)</strong>
@@ -608,53 +631,53 @@ const Section2 = () => {
       )}
 
       {subTab === 'family' && (
-         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6">ISO 家族標準快速記憶對照表</h3>
-            <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-              <table className="w-full text-left text-sm text-slate-700 dark:text-slate-300">
-                <thead className="bg-slate-100 dark:bg-slate-900 font-black text-slate-800 dark:text-slate-200">
-                  <tr>
-                    <th className="p-4 border-b border-slate-200 dark:border-slate-700 w-1/3">ISO 代碼</th>
-                    <th className="p-4 border-b border-slate-200 dark:border-slate-700">核心定義與考點</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                    <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14001</td>
-                    <td className="p-4">環境管理系統 (EMS) 基礎。</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                    <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14064-1</td>
-                    <td className="p-4">組織層級溫室氣體盤查 (Organization level)。定義營運邊界與量化類別。</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                    <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14064-2</td>
-                    <td className="p-4">專案層級減量活動 (Project level)。提供確證與查證的專案基礎（如種樹、換燈管拿碳權）。</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                    <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14064-3</td>
-                    <td className="p-4">溫室氣體聲明之「確證 (Validation) 與查證 (Verification)」指引（給查驗機構看的）。</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                    <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14067</td>
-                    <td className="p-4">產品碳足跡 (Product Carbon Footprint)。評估單一產品生命週期(LCA)的排放。</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                    <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14068-1</td>
-                    <td className="p-4">氣候變化管理─「碳中和」標準。取代PAS 2060，強調減量優先於抵換。</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                    <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14097</td>
-                    <td className="p-4">金融業專用：氣候變遷相關投資和財務活動的評估架構。</td>
-                  </tr>
-                  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                    <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 50001</td>
-                    <td className="p-4">能源管理系統。建立能源基線(EnB)及能源績效指標(EnPI)。</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-         </div>
+        <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
+          <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6">ISO 家族標準快速記憶對照表</h3>
+          <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <table className="w-full text-left text-sm text-slate-700 dark:text-slate-300">
+              <thead className="bg-slate-100 dark:bg-slate-900 font-black text-slate-800 dark:text-slate-200">
+                <tr>
+                  <th className="p-4 border-b border-slate-200 dark:border-slate-700 w-1/3">ISO 代碼</th>
+                  <th className="p-4 border-b border-slate-200 dark:border-slate-700">核心定義與考點</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                  <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14001</td>
+                  <td className="p-4">環境管理系統 (EMS) 基礎。</td>
+                </tr>
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                  <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14064-1</td>
+                  <td className="p-4">組織層級溫室氣體盤查 (Organization level)。定義營運邊界與量化類別。</td>
+                </tr>
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                  <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14064-2</td>
+                  <td className="p-4">專案層級減量活動 (Project level)。提供確證與查證的專案基礎（如種樹、換燈管拿碳權）。</td>
+                </tr>
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                  <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14064-3</td>
+                  <td className="p-4">溫室氣體聲明之「確證 (Validation) 與查證 (Verification)」指引（給查驗機構看的）。</td>
+                </tr>
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                  <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14067</td>
+                  <td className="p-4">產品碳足跡 (Product Carbon Footprint)。評估單一產品生命週期(LCA)的排放。</td>
+                </tr>
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                  <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14068-1</td>
+                  <td className="p-4">氣候變化管理─「碳中和」標準。取代PAS 2060，強調減量優先於抵換。</td>
+                </tr>
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                  <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 14097</td>
+                  <td className="p-4">金融業專用：氣候變遷相關投資和財務活動的評估架構。</td>
+                </tr>
+                <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                  <td className="p-4 font-bold text-emerald-700 dark:text-emerald-400">ISO 50001</td>
+                  <td className="p-4">能源管理系統。建立能源基線(EnB)及能源績效指標(EnPI)。</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
 
     </div>
@@ -676,7 +699,7 @@ const Section3 = () => {
         <p className="text-slate-500 dark:text-slate-400 mt-3 text-lg">必考重點：GHG Protocol盤查範疇、SBTi 目標設定條件、RE100、TCFD與SASB財務揭露</p>
       </header>
 
-      <SubTabs 
+      <SubTabs
         tabs={[
           { id: 'ghg', label: 'GHG Protocol 盤查範疇' },
           { id: 'sbti', label: 'SBTi 科學基礎減量目標' },
@@ -685,9 +708,9 @@ const Section3 = () => {
           { id: 'sasb', label: 'SASB 永續會計準則' },
           { id: 'pact', label: 'PACT 供應鏈碳透明' },
           { id: 'guide', label: '淨零實踐指南' }
-        ]} 
-        activeTab={subTab} 
-        setActiveTab={setSubTab} 
+        ]}
+        activeTab={subTab}
+        setActiveTab={setSubTab}
       />
 
       {subTab === 'ghg' && (
@@ -739,7 +762,7 @@ const Section3 = () => {
               </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">涵蓋企業價值鏈（Value Chain）上下游活動所衍生的所有間接排放，共細分為 15 個類別。</p>
             </div>
-            
+
             <div className="w-full">
               <table className="w-full text-left text-xs md:text-sm text-slate-700 dark:text-slate-300 border-collapse">
                 <thead className="bg-slate-100 dark:bg-slate-800/80 font-black text-slate-800 dark:text-slate-200 text-center">
@@ -754,7 +777,7 @@ const Section3 = () => {
                   {/* 上游活動 8 項 */}
                   <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                     <td rowSpan={8} className="p-2 md:p-4 border border-slate-200 dark:border-slate-700 bg-emerald-50 dark:bg-emerald-900/10 font-bold text-emerald-800 dark:text-emerald-400 align-middle text-center">
-                      上游活動<br className="hidden md:block"/>(Upstream)<br/><span className="text-[10px] md:text-xs font-normal text-emerald-600 dark:text-emerald-500 mt-2 block leading-snug">企業花錢採購<br/>所衍生的排放</span>
+                      上游活動<br className="hidden md:block" />(Upstream)<br /><span className="text-[10px] md:text-xs font-normal text-emerald-600 dark:text-emerald-500 mt-2 block leading-snug">企業花錢採購<br />所衍生的排放</span>
                     </td>
                     <td className="p-2 md:p-3 border border-slate-200 dark:border-slate-700">
                       <span className="font-bold text-slate-900 dark:text-white block">Scope 3.1</span>
@@ -863,7 +886,7 @@ const Section3 = () => {
                   {/* 下游活動 7 項 */}
                   <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                     <td rowSpan={7} className="p-2 md:p-4 border border-slate-200 dark:border-slate-700 bg-blue-50 dark:bg-blue-900/10 font-bold text-blue-800 dark:text-blue-400 align-middle text-center">
-                      下游活動<br className="hidden md:block"/>(Downstream)<br/><span className="text-[10px] md:text-xs font-normal text-blue-600 dark:text-blue-500 mt-2 block leading-snug">產品售出後<br/>衍生的排放</span>
+                      下游活動<br className="hidden md:block" />(Downstream)<br /><span className="text-[10px] md:text-xs font-normal text-blue-600 dark:text-blue-500 mt-2 block leading-snug">產品售出後<br />衍生的排放</span>
                     </td>
                     <td className="p-2 md:p-3 border border-slate-200 dark:border-slate-700">
                       <span className="font-bold text-slate-900 dark:text-white block">Scope 3.9</span>
@@ -964,24 +987,24 @@ const Section3 = () => {
 
       {subTab === 'sbti' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <h3 className="text-2xl font-bold text-purple-900 dark:text-purple-300 mb-4 flex items-center gap-2"><Target className="w-6 h-6"/> SBTi 考點全面剖析</h3>
+          <h3 className="text-2xl font-bold text-purple-900 dark:text-purple-300 mb-4 flex items-center gap-2"><Target className="w-6 h-6" /> SBTi 考點全面剖析</h3>
           <p className="text-slate-700 dark:text-slate-300 mb-6 bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl border border-purple-100 dark:border-purple-900/30">由 CDP、聯合國全球盟約(UNGC)、世界資源研究院(WRI)及世界自然基金會(WWF)於2015年創立，對齊巴黎協定 1.5°C 升溫限制。</p>
-          
+
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="border border-slate-200 dark:border-slate-700 rounded-2xl p-6">
               <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-700 pb-2 mb-4">目標覆蓋率 (Boundary Coverage) 考點</h4>
               <ul className="space-y-4 text-sm">
                 <li className="flex flex-col bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
                   <span className="font-black text-purple-700 dark:text-purple-400 mb-1">近期目標 (Near-term) 5~10年</span>
-                  <span className="text-slate-600 dark:text-slate-300">Scope 1+2：涵蓋 <strong className="text-red-500 dark:text-red-400">95%</strong> 以上。<br/>Scope 3：若占總排放達 40% 以上，則須涵蓋 <strong className="text-red-500 dark:text-red-400">67%</strong> 以上。</span>
+                  <span className="text-slate-600 dark:text-slate-300">Scope 1+2：涵蓋 <strong className="text-red-500 dark:text-red-400">95%</strong> 以上。<br />Scope 3：若占總排放達 40% 以上，則須涵蓋 <strong className="text-red-500 dark:text-red-400">67%</strong> 以上。</span>
                 </li>
                 <li className="flex flex-col bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
                   <span className="font-black text-purple-700 dark:text-purple-400 mb-1">淨零目標 (Long-term / Net-Zero) 2050前</span>
-                  <span className="text-slate-600 dark:text-slate-300">Scope 1+2+3：均須涵蓋 <strong className="text-red-500 dark:text-red-400">90%</strong> 以上。<br/>剩餘排放水準(Residual emissions)至多 <strong className="text-red-500 dark:text-red-400">10%</strong>，才能使用碳權抵換(Neutralization)。</span>
+                  <span className="text-slate-600 dark:text-slate-300">Scope 1+2+3：均須涵蓋 <strong className="text-red-500 dark:text-red-400">90%</strong> 以上。<br />剩餘排放水準(Residual emissions)至多 <strong className="text-red-500 dark:text-red-400">10%</strong>，才能使用碳權抵換(Neutralization)。</span>
                 </li>
               </ul>
             </div>
-            
+
             <div className="border border-slate-200 dark:border-slate-700 rounded-2xl p-6">
               <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-700 pb-2 mb-4">中小企業路徑 (SME Route) 考點</h4>
               <ul className="list-disc pl-5 text-sm space-y-2 text-slate-700 dark:text-slate-300">
@@ -1003,9 +1026,9 @@ const Section3 = () => {
 
       {subTab === 're100' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <h3 className="text-2xl font-bold text-yellow-800 dark:text-yellow-500 mb-4 flex items-center gap-2"><Sun className="w-6 h-6"/> RE100 再生能源倡議</h3>
+          <h3 className="text-2xl font-bold text-yellow-800 dark:text-yellow-500 mb-4 flex items-center gap-2"><Sun className="w-6 h-6" /> RE100 再生能源倡議</h3>
           <p className="text-slate-700 dark:text-slate-300 mb-6 bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-xl border border-yellow-200 dark:border-yellow-900/30">由氣候組織 (The Climate Group) 與 CDP 發起。參與企業承諾在 2050 年前達成 <strong>100% 營運範圍使用再生電力</strong>。</p>
-          
+
           <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100 mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">【必考】企業達成 RE100 的三大合法途徑</h4>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 p-5 rounded-2xl">
@@ -1029,7 +1052,7 @@ const Section3 = () => {
 
       {subTab === 'tcfd' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <h3 className="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4 flex items-center gap-2"><PieChart className="w-6 h-6"/> TCFD 氣候相關財務揭露</h3>
+          <h3 className="text-2xl font-bold text-blue-900 dark:text-blue-400 mb-4 flex items-center gap-2"><PieChart className="w-6 h-6" /> TCFD 氣候相關財務揭露</h3>
           <p className="text-slate-700 dark:text-slate-300 mb-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30">由金融穩定委員會 (FSB) 設立。核心目的是將「氣候變遷」視為一種「財務風險」，要求企業向投資人與利害關係人透明揭露氣候變遷對公司財務的潛在影響。</p>
 
           <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -1062,7 +1085,7 @@ const Section3 = () => {
 
       {subTab === 'sasb' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <h3 className="text-2xl font-bold text-indigo-900 dark:text-indigo-400 mb-4 flex items-center gap-2"><FileText className="w-6 h-6"/> SASB 永續會計準則</h3>
+          <h3 className="text-2xl font-bold text-indigo-900 dark:text-indigo-400 mb-4 flex items-center gap-2"><FileText className="w-6 h-6" /> SASB 永續會計準則</h3>
           <p className="text-slate-700 dark:text-slate-300 mb-6 bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/30">
             由永續會計準則委員會 (SASB) 發布。核心目的是為<strong>投資人與資本市場</strong>提供具備「財務重大性」且「具可比較性」的 ESG 資訊，協助評估企業的長期財務價值。
           </p>
@@ -1101,9 +1124,9 @@ const Section3 = () => {
 
       {subTab === 'pact' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <h3 className="text-2xl font-bold text-teal-900 dark:text-teal-400 mb-4 flex items-center gap-2"><Network className="w-6 h-6"/> PACT 碳透明度夥伴關係</h3>
+          <h3 className="text-2xl font-bold text-teal-900 dark:text-teal-400 mb-4 flex items-center gap-2"><Network className="w-6 h-6" /> PACT 碳透明度夥伴關係</h3>
           <p className="text-slate-700 dark:text-slate-300 mb-6 bg-teal-50 dark:bg-teal-900/20 p-4 rounded-xl border border-teal-100 dark:border-teal-900/30">由 WBCSD (世界企業永續發展委員會) 發起。核心目標是為了解決企業在計算「範疇三 (Scope 3)」時，面臨供應鏈數據不透明、格式不一、難以串接的痛點。</p>
-          
+
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="border border-slate-200 dark:border-slate-700 rounded-2xl p-6">
               <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-700 pb-2 mb-4">解決的核心痛點</h4>
@@ -1118,7 +1141,7 @@ const Section3 = () => {
                 </li>
               </ul>
             </div>
-            
+
             <div className="border border-slate-200 dark:border-slate-700 rounded-2xl p-6">
               <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-700 pb-2 mb-4">Pathfinder Framework (探路者框架)</h4>
               <ul className="list-disc pl-5 text-sm space-y-3 text-slate-700 dark:text-slate-300">
@@ -1132,36 +1155,36 @@ const Section3 = () => {
       )}
 
       {subTab === 'guide' && (
-         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-         <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-8 text-center bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">《淨零實踐指南》7大步驟地圖</h3>
-         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-           {[
-             { name: '準備', icon: <Target size={20}/>, desc: '啟動淨零之旅' },
-             { name: '衡量', icon: <Search size={20}/>, desc: '盤查溫室氣體' },
-             { name: '設定目標', icon: <ArrowRight size={20}/>, desc: '務實且具意義' },
-             { name: '減量', icon: <Wind size={20}/>, desc: '排定優先順序' },
-             { name: '報導', icon: <BookOpen size={20}/>, desc: '氣候風險揭露' },
-             { name: '超越', icon: <Globe size={20}/>, desc: '價值鏈外行動' },
-             { name: '調適', icon: <ShieldCheck size={20}/>, desc: '建立實體韌性' }
-           ].map((step, idx) => (
-             <React.Fragment key={idx}>
-               <div className="flex flex-col items-center group w-full md:w-auto">
-                 <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-900 border-4 border-purple-100 dark:border-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3 group-hover:border-purple-500 dark:group-hover:border-purple-400 group-hover:bg-purple-50 dark:group-hover:bg-purple-900/30 transition-all shadow-sm">
-                   {step.icon}
-                 </div>
-                 <span className="text-md font-black text-slate-800 dark:text-slate-200">{step.name}</span>
-                 <span className="text-xs text-slate-500 dark:text-slate-400 mt-1 hidden md:block text-center">{step.desc}</span>
-               </div>
-               {idx < 6 && (
-                 <div className="hidden md:block flex-1 h-1 bg-slate-200 dark:bg-slate-700 w-full rounded-full relative"></div>
-               )}
-               {idx < 6 && (
-                 <div className="md:hidden w-1 h-6 bg-slate-200 dark:bg-slate-700 rounded-full my-1"></div>
-               )}
-             </React.Fragment>
-           ))}
-         </div>
-       </div>
+        <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
+          <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-8 text-center bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">《淨零實踐指南》7大步驟地圖</h3>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            {[
+              { name: '準備', icon: <Target size={20} />, desc: '啟動淨零之旅' },
+              { name: '衡量', icon: <Search size={20} />, desc: '盤查溫室氣體' },
+              { name: '設定目標', icon: <ArrowRight size={20} />, desc: '務實且具意義' },
+              { name: '減量', icon: <Wind size={20} />, desc: '排定優先順序' },
+              { name: '報導', icon: <BookOpen size={20} />, desc: '氣候風險揭露' },
+              { name: '超越', icon: <Globe size={20} />, desc: '價值鏈外行動' },
+              { name: '調適', icon: <ShieldCheck size={20} />, desc: '建立實體韌性' }
+            ].map((step, idx) => (
+              <Fragment key={idx}>
+                <div className="flex flex-col items-center group w-full md:w-auto">
+                  <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-900 border-4 border-purple-100 dark:border-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3 group-hover:border-purple-500 dark:group-hover:border-purple-400 group-hover:bg-purple-50 dark:group-hover:bg-purple-900/30 transition-all shadow-sm">
+                    {step.icon}
+                  </div>
+                  <span className="text-md font-black text-slate-800 dark:text-slate-200">{step.name}</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 mt-1 hidden md:block text-center">{step.desc}</span>
+                </div>
+                {idx < 6 && (
+                  <div className="hidden md:block flex-1 h-1 bg-slate-200 dark:bg-slate-700 w-full rounded-full relative"></div>
+                )}
+                {idx < 6 && (
+                  <div className="md:hidden w-1 h-6 bg-slate-200 dark:bg-slate-700 rounded-full my-1"></div>
+                )}
+              </Fragment>
+            ))}
+          </div>
+        </div>
       )}
 
     </div>
@@ -1183,15 +1206,15 @@ const Section4 = () => {
         <p className="text-slate-500 dark:text-slate-400 mt-3 text-lg">必考重點：綠色金融原則(PRI/PRB/EPs)、碳定價(稅/費/ETS)、碳抵換</p>
       </header>
 
-      <SubTabs 
+      <SubTabs
         tabs={[
           { id: 'pricing', label: '碳定價與碳關稅' },
           { id: 'credits', label: '碳交易與碳抵換機制' },
           { id: 'icp', label: '內部碳定價 (ICP)' },
           { id: 'finance', label: '永續金融與倡議' }
-        ]} 
-        activeTab={subTab} 
-        setActiveTab={setSubTab} 
+        ]}
+        activeTab={subTab}
+        setActiveTab={setSubTab}
       />
 
       {subTab === 'pricing' && (
@@ -1234,7 +1257,7 @@ const Section4 = () => {
       {subTab === 'credits' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
           <h3 className="text-2xl font-bold text-emerald-800 dark:text-emerald-400 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">碳權 (Carbon Credits) 的來源與分類</h3>
-          
+
           <div className="mb-8 p-6 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-700">
             <h4 className="font-bold text-lg text-slate-800 dark:text-slate-100 mb-4">名詞辨析：Allowance vs. Credit</h4>
             <div className="grid md:grid-cols-2 gap-4 text-sm">
@@ -1275,37 +1298,37 @@ const Section4 = () => {
 
       {subTab === 'icp' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-           <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4 flex items-center gap-2"><Droplets className="text-teal-500 dark:text-teal-400"/> 內部碳定價 (Internal Carbon Pricing)</h3>
-           <p className="text-slate-600 dark:text-slate-300 mb-6 bg-teal-50 dark:bg-teal-900/20 p-4 rounded-xl border border-teal-100 dark:border-teal-900/30">將氣候風險轉化為財務語言，強迫各部門在進行投資決策時將排碳成本納入考量，從而驅動企業低碳轉型。</p>
-           
-           <div className="grid md:grid-cols-4 gap-4">
-              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl text-center">
-                <div className="w-10 h-10 mx-auto bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 rounded-full flex items-center justify-center font-black text-lg mb-3">1</div>
-                <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">標的</h4>
-                <p className="text-sm text-slate-500 dark:text-slate-400">決定定價適用範圍，是僅限範疇一/二，還是包含出差等範疇三。</p>
-              </div>
-              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl text-center">
-                <div className="w-10 h-10 mx-auto bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 rounded-full flex items-center justify-center font-black text-lg mb-3">2</div>
-                <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">影響</h4>
-                <p className="text-sm text-slate-500 dark:text-slate-400">決定是虛擬計算的「影子價格」還是真正扣部門預算的「實質收費」。</p>
-              </div>
-              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl text-center">
-                <div className="w-10 h-10 mx-auto bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 rounded-full flex items-center justify-center font-black text-lg mb-3">3</div>
-                <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">發展</h4>
-                <p className="text-sm text-slate-500 dark:text-slate-400">價格隨時間推移的軌跡（靜態定價 vs 隨政策法規動態遞增）。</p>
-              </div>
-              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl text-center">
-                <div className="w-10 h-10 mx-auto bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 rounded-full flex items-center justify-center font-black text-lg mb-3">4</div>
-                <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">應用</h4>
-                <p className="text-sm text-slate-500 dark:text-slate-400">將碳價用於評估資本支出投報率(ROI)、或納入高階主管績效考核。</p>
-              </div>
-           </div>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4 flex items-center gap-2"><Droplets className="text-teal-500 dark:text-teal-400" /> 內部碳定價 (Internal Carbon Pricing)</h3>
+          <p className="text-slate-600 dark:text-slate-300 mb-6 bg-teal-50 dark:bg-teal-900/20 p-4 rounded-xl border border-teal-100 dark:border-teal-900/30">將氣候風險轉化為財務語言，強迫各部門在進行投資決策時將排碳成本納入考量，從而驅動企業低碳轉型。</p>
+
+          <div className="grid md:grid-cols-4 gap-4">
+            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl text-center">
+              <div className="w-10 h-10 mx-auto bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 rounded-full flex items-center justify-center font-black text-lg mb-3">1</div>
+              <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">標的</h4>
+              <p className="text-sm text-slate-500 dark:text-slate-400">決定定價適用範圍，是僅限範疇一/二，還是包含出差等範疇三。</p>
+            </div>
+            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl text-center">
+              <div className="w-10 h-10 mx-auto bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 rounded-full flex items-center justify-center font-black text-lg mb-3">2</div>
+              <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">影響</h4>
+              <p className="text-sm text-slate-500 dark:text-slate-400">決定是虛擬計算的「影子價格」還是真正扣部門預算的「實質收費」。</p>
+            </div>
+            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl text-center">
+              <div className="w-10 h-10 mx-auto bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 rounded-full flex items-center justify-center font-black text-lg mb-3">3</div>
+              <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">發展</h4>
+              <p className="text-sm text-slate-500 dark:text-slate-400">價格隨時間推移的軌跡（靜態定價 vs 隨政策法規動態遞增）。</p>
+            </div>
+            <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl text-center">
+              <div className="w-10 h-10 mx-auto bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 rounded-full flex items-center justify-center font-black text-lg mb-3">4</div>
+              <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">應用</h4>
+              <p className="text-sm text-slate-500 dark:text-slate-400">將碳價用於評估資本支出投報率(ROI)、或納入高階主管績效考核。</p>
+            </div>
+          </div>
         </div>
       )}
 
       {subTab === 'finance' && (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4 flex items-center gap-2"><Landmark className="text-blue-600 dark:text-blue-400"/> 國際永續金融倡議與規範</h3>
+          <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4 flex items-center gap-2"><Landmark className="text-blue-600 dark:text-blue-400" /> 國際永續金融倡議與規範</h3>
           <p className="text-slate-700 dark:text-slate-300 mb-6 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30">
             <strong>核心觀念：</strong>金融業在淨零轉型中扮演「資金引導」的關鍵角色。透過投融資的影響力（對應 GHG Protocol 範疇三第 15 類：投資），運用資金成本的壓力，引導實體企業落實減碳與 ESG 轉型。
           </p>
@@ -1359,15 +1382,15 @@ const Dashboard = () => (
 
     <div className="bg-white dark:bg-slate-800 p-8 md:p-12 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-700 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full -mr-20 -mt-20 z-0"></div>
-      
+
       <div className="relative z-10">
         <h3 className="text-center font-black text-2xl text-emerald-900 dark:text-emerald-400 mb-8 tracking-widest pb-4 border-b-2 border-emerald-100 dark:border-emerald-800/50 inline-block w-full">四大轉型策略</h3>
         <div className="grid md:grid-cols-4 gap-6 mb-12">
           {[
-            { title: '能源轉型', icon: <Zap size={32}/>, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20', border: 'border-amber-200 dark:border-amber-800/50', text: '極大化再生能源、氫能開發' },
-            { title: '產業轉型', icon: <Building2 size={32}/>, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20', border: 'border-blue-200 dark:border-blue-800/50', text: '製程改善、循環經濟零廢棄' },
-            { title: '生活轉型', icon: <Leaf size={32}/>, color: 'text-green-600 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-900/20', border: 'border-green-200 dark:border-green-800/50', text: '綠色運輸、低碳建築與飲食' },
-            { title: '社會轉型', icon: <Globe size={32}/>, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20', border: 'border-purple-200 dark:border-purple-800/50', text: '公正轉型、公民參與對話' },
+            { title: '能源轉型', icon: <Zap size={32} />, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20', border: 'border-amber-200 dark:border-amber-800/50', text: '極大化再生能源、氫能開發' },
+            { title: '產業轉型', icon: <Building2 size={32} />, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20', border: 'border-blue-200 dark:border-blue-800/50', text: '製程改善、循環經濟零廢棄' },
+            { title: '生活轉型', icon: <Leaf size={32} />, color: 'text-green-600 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-900/20', border: 'border-green-200 dark:border-green-800/50', text: '綠色運輸、低碳建築與飲食' },
+            { title: '社會轉型', icon: <Globe size={32} />, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20', border: 'border-purple-200 dark:border-purple-800/50', text: '公正轉型、公民參與對話' },
           ].map((item, idx) => (
             <div key={idx} className={`${item.bg} ${item.border} border-2 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-sm hover:-translate-y-1 transition-transform`}>
               <div className={`${item.color} mb-3 bg-white dark:bg-slate-900 p-3 rounded-full shadow-sm`}>{item.icon}</div>
@@ -1382,7 +1405,7 @@ const Dashboard = () => (
           <div className="flex flex-wrap gap-3 justify-center">
             {['風電/光電', '氫能', '前瞻能源', '電力系統與儲能', '節能', '碳捕捉利用及封存(CCUS)', '運具電動化及無碳化', '資源循環零廢棄', '自然碳匯', '淨零綠生活', '綠色金融', '公正轉型'].map((strat, i) => (
               <span key={i} className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full text-sm font-bold text-slate-700 dark:text-slate-300 shadow-sm hover:border-emerald-500 dark:hover:border-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-400 cursor-default transition-colors">
-                {i+1}. {strat}
+                {i + 1}. {strat}
               </span>
             ))}
           </div>
@@ -1390,14 +1413,14 @@ const Dashboard = () => (
 
         <h3 className="text-center font-black text-2xl text-slate-800 dark:text-slate-100 mb-8 border-b-2 border-slate-100 dark:border-slate-700 pb-4 inline-block w-full">兩大治理基礎</h3>
         <div className="grid md:grid-cols-2 gap-6">
-           <div className="bg-gradient-to-br from-slate-800 to-slate-700 dark:from-slate-900 dark:to-slate-800 p-8 rounded-3xl text-white text-center shadow-lg border border-slate-600 dark:border-slate-700">
-              <h4 className="font-black text-2xl mb-3 text-emerald-300">科技研發</h4>
-              <p className="text-slate-300 dark:text-slate-400">發展淨零科技、負碳技術(CCUS)、前瞻綠能基礎建設</p>
-           </div>
-           <div className="bg-gradient-to-br from-emerald-800 to-emerald-700 dark:from-emerald-900 dark:to-emerald-800 p-8 rounded-3xl text-white text-center shadow-lg border border-emerald-600 dark:border-emerald-700">
-              <h4 className="font-black text-2xl mb-3 text-orange-300">氣候法制</h4>
-              <p className="text-emerald-100 dark:text-emerald-200">氣候變遷因應法、碳費徵收與查驗機制、外部成本內部化</p>
-           </div>
+          <div className="bg-gradient-to-br from-slate-800 to-slate-700 dark:from-slate-900 dark:to-slate-800 p-8 rounded-3xl text-white text-center shadow-lg border border-slate-600 dark:border-slate-700">
+            <h4 className="font-black text-2xl mb-3 text-emerald-300">科技研發</h4>
+            <p className="text-slate-300 dark:text-slate-400">發展淨零科技、負碳技術(CCUS)、前瞻綠能基礎建設</p>
+          </div>
+          <div className="bg-gradient-to-br from-emerald-800 to-emerald-700 dark:from-emerald-900 dark:to-emerald-800 p-8 rounded-3xl text-white text-center shadow-lg border border-emerald-600 dark:border-emerald-700">
+            <h4 className="font-black text-2xl mb-3 text-orange-300">氣候法制</h4>
+            <p className="text-emerald-100 dark:text-emerald-200">氣候變遷因應法、碳費徵收與查驗機制、外部成本內部化</p>
+          </div>
         </div>
       </div>
     </div>
@@ -1407,8 +1430,8 @@ const Dashboard = () => (
 const Dictionary = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filtered = dictionary.filter(item => 
-    item.term.toLowerCase().includes(searchTerm.toLowerCase()) || 
+  const filtered = dictionary.filter(item =>
+    item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.desc.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -1421,8 +1444,8 @@ const Dictionary = () => {
 
       <div className="relative max-w-2xl mx-auto mb-10">
         <Search className="absolute left-5 top-4 text-emerald-600 dark:text-emerald-500 w-6 h-6" />
-        <input 
-          type="text" 
+        <input
+          type="text"
           placeholder="搜尋關鍵字 (例如: Scope, CBAM, GWP...)"
           className="w-full pl-14 pr-6 py-4 rounded-full border-2 border-slate-200 dark:border-slate-700 focus:border-emerald-500 dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 outline-none text-lg shadow-sm transition-all bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
           value={searchTerm}
@@ -1448,26 +1471,34 @@ const Dictionary = () => {
   );
 }
 
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  answer: number;
+  explanation: string;
+  batch: string;
+}
+
 // 解析 CSV 的 Helper 函式 (已升級為全自動偵測分隔符號，並統一解答判斷邏輯)
-const parseCSVtoQuizzes = (csvText) => {
+const parseCSVtoQuizzes = (csvText: string): QuizQuestion[] => {
   if (!csvText || typeof csvText !== 'string') return [];
-  
+
   // 自動偵測分隔符號 (判斷第一行出現的逗號與分號次數)
   const firstLine = csvText.split(/\r?\n/)[0] || '';
   const commas = (firstLine.match(/,/g) || []).length;
   const semicolons = (firstLine.match(/;/g) || []).length;
   const delimiter = semicolons > commas ? ';' : ',';
 
-  const rows = [];
-  let currentRow = [];
+  const rows: string[][] = [];
+  let currentRow: string[] = [];
   let currentCell = '';
   let inQuotes = false;
-  
+
   // 更穩健的 CSV 解析器，支援儲存格內包含分隔符與換行符號
   for (let i = 0; i < csvText.length; i++) {
     const char = csvText[i];
     const nextChar = csvText[i + 1];
-    
+
     if (char === '"') {
       if (inQuotes && nextChar === '"') {
         currentCell += '"';
@@ -1482,7 +1513,7 @@ const parseCSVtoQuizzes = (csvText) => {
       currentRow.push(currentCell);
       // 過濾掉全空的列
       if (currentRow.some(cell => cell.trim() !== '')) {
-         rows.push(currentRow);
+        rows.push(currentRow);
       }
       currentRow = [];
       currentCell = '';
@@ -1492,19 +1523,21 @@ const parseCSVtoQuizzes = (csvText) => {
     }
   }
   if (currentRow.length > 0 || currentCell) {
-     currentRow.push(currentCell);
-     if (currentRow.some(cell => cell.trim() !== '')) {
-        rows.push(currentRow);
-     }
+    currentRow.push(currentCell);
+    if (currentRow.some(cell => cell.trim() !== '')) {
+      rows.push(currentRow);
+    }
   }
 
   if (rows.length < 2) return [];
-  
+
   // 移除 BOM (Byte Order Mark) 以確保標題列比對正確
-  const headers = rows[0].map(h => h.trim().toLowerCase().replace(/^\uFEFF/, ''));
-  
+  const headers: string[] = rows[0].map(h =>
+    h.trim().toLowerCase().replace(/^\uFEFF/, '')
+  );
+
   const rawJson = rows.slice(1).map(row => {
-    const obj = {};
+    const obj: Record<string, string> = {};
     headers.forEach((header, index) => {
       // 確保即使列長度不符也不會出錯
       obj[header] = (row[index] || '').trim();
@@ -1512,76 +1545,77 @@ const parseCSVtoQuizzes = (csvText) => {
     return obj;
   });
 
-  return rawJson.map(row => {
-    const q = row['question'] || row['題目'] || row['問題'] || '';
-    const exp = row['explanation'] || row['解析'] || row['解答'] || row['說明'] || '';
-    
-    // 解析 batch 欄位 (支援多種常見命名)
-    const batchRaw = String(row['batch'] || row['batch#'] || row['批次'] || row['分類'] || '').trim();
-    const batchName = batchRaw || '未分類題庫';
+  return rawJson
+    .map((row: Record<string, string>): QuizQuestion => {
+      const q = row['question'] || row['題目'] || row['問題'] || '';
+      const exp = row['explanation'] || row['解析'] || row['解答'] || row['說明'] || '';
 
-    let options = [];
-    // 根據新的 prompt 格式，優先找尋 option_0, option_1, option_2, option_3
-    const o0 = row['option_0'] || row['option1'] || row['選項a'] || row['選項1'] || '';
-    const o1 = row['option_1'] || row['option2'] || row['選項b'] || row['選項2'] || '';
-    const o2 = row['option_2'] || row['option3'] || row['選項c'] || row['選項3'] || '';
-    const o3 = row['option_3'] || row['option4'] || row['選項d'] || row['選項4'] || '';
-    
-    if (o0 || o1 || o2 || o3) {
+      // 解析 batch 欄位 (支援多種常見命名)
+      const batchRaw = String(row['batch'] || row['batch#'] || row['批次'] || row['分類'] || '').trim();
+      const batchName = batchRaw || '未分類題庫';
+
+      let options: string[] = [];
+      // 根據新的 prompt 格式，優先找尋 option_0, option_1, option_2, option_3
+      const o0 = row['option_0'] || row['option1'] || row['選項a'] || row['選項1'] || '';
+      const o1 = row['option_1'] || row['option2'] || row['選項b'] || row['選項2'] || '';
+      const o2 = row['option_2'] || row['option3'] || row['選項c'] || row['選項3'] || '';
+      const o3 = row['option_3'] || row['option4'] || row['選項d'] || row['選項4'] || '';
+
+      if (o0 || o1 || o2 || o3) {
         options = [o0, o1, o2, o3].filter(Boolean); // 過濾掉空字串
-    } else {
+      } else {
         // Fallback: 尋找任何包含 option 或 選項 的欄位
         const optKeys = Object.keys(row).filter(k => k.includes('option') || k.includes('選項'));
         optKeys.sort();
         options = optKeys.map(k => row[k]).filter(Boolean);
-    }
-
-    let ansIndex = 0;
-    // 擴大 answer 的容錯解析 (支援 answer, 答案, 解答 等欄位名稱)
-    const ansRaw = String(row['answer'] || row['答案'] || row['解答選項'] || row['解答'] || '').trim();
-    const ansRawUpper = ansRaw.toUpperCase();
-
-    // 判斷正確解答索引邏輯
-    if (/^[A-D]$/.test(ansRawUpper)) {
-      // 處理 A, B, C, D 轉為 0, 1, 2, 3
-      ansIndex = ansRawUpper.charCodeAt(0) - 65;
-    } else if (options.findIndex(opt => opt.trim() === ansRaw) !== -1) {
-      // 如果 CSV 的解答直接填寫選項的完整字串，透過比對找出正確索引
-      ansIndex = options.findIndex(opt => opt.trim() === ansRaw);
-    } else {
-      // 若為數字 (配合 prompt 提示：0=A, 1=B, 2=C, 3=D)
-      const parsedNum = parseInt(ansRaw, 10);
-      if (!isNaN(parsedNum)) {
-         ansIndex = parsedNum;
       }
-    }
 
-    // 最後防護：確保索引不會超出範圍
-    if (ansIndex < 0 || ansIndex >= options.length) {
-      ansIndex = 0;
-    }
+      let ansIndex = 0;
+      // 擴大 answer 的容錯解析 (支援 answer, 答案, 解答 等欄位名稱)
+      const ansRaw = String(row['answer'] || row['答案'] || row['解答選項'] || row['解答'] || '').trim();
+      const ansRawUpper = ansRaw.toUpperCase();
 
-    return {
-      question: q,
-      options: options.length >= 2 ? options : ['(無效的選項)'],
-      answer: ansIndex,
-      explanation: exp,
-      batch: batchName // 加入 batch 資訊
-    };
-  }).filter(q => q.question); // 過濾掉沒有題目的空資料
+      // 判斷正確解答索引邏輯
+      if (/^[A-D]$/.test(ansRawUpper)) {
+        // 處理 A, B, C, D 轉為 0, 1, 2, 3
+        ansIndex = ansRawUpper.charCodeAt(0) - 65;
+      } else if (options.findIndex(opt => opt.trim() === ansRaw) !== -1) {
+        // 如果 CSV 的解答直接填寫選項的完整字串，透過比對找出正確索引
+        ansIndex = options.findIndex(opt => opt.trim() === ansRaw);
+      } else {
+        // 若為數字 (配合 prompt 提示：0=A, 1=B, 2=C, 3=D)
+        const parsedNum = parseInt(ansRaw, 10);
+        if (!isNaN(parsedNum)) {
+          ansIndex = parsedNum;
+        }
+      }
+
+      // 最後防護：確保索引不會超出範圍
+      if (ansIndex < 0 || ansIndex >= options.length) {
+        ansIndex = 0;
+      }
+      return {
+        question: q,
+        options: options.length >= 2 ? options : ['(無效的選項)'],
+        answer: ansIndex,
+        explanation: exp,
+        batch: batchName // 加入 batch 資訊
+      };
+    })
+    .filter((q: QuizQuestion) => q.question); // 過濾掉沒有題目的空資料
 };
 
 const QuizzesPage = () => {
-  const [apiQuizzes, setApiQuizzes] = useState([]);
+  const [apiQuizzes, setApiQuizzes] = useState<QuizQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
   const [showImport, setShowImport] = useState(false);
-  
+
   // Batch 題庫切換狀態 (預設值為空，將在資料載入後動態設定)
   const [selectedBatch, setSelectedBatch] = useState('');
 
   // 成績與錯題追蹤
-  const [answersStatus, setAnswersStatus] = useState({});
+  const [answersStatus, setAnswersStatus] = useState<Record<number, boolean>>({});
   const [showResult, setShowResult] = useState(false);
 
   // 串接 Google Sheet CSV 雲端題庫
@@ -1591,16 +1625,16 @@ const QuizzesPage = () => {
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQCPGxbKogw93V9PBXklJgsA35TXFMbC8aRd5hwAf4KsIaCdN0F4mvLlybMB6Q-7dx04DWUbAjKzR2E/pub?output=csv';
         // Google Sheets 發布為 CSV 時，預設允許跨來源請求 (CORS)，直接讀取即可
         const response = await fetch(csvUrl);
-        
+
         if (!response.ok) {
-           throw new Error('Network response was not ok');
+          throw new Error('Network response was not ok');
         }
-        
+
         const csvText = await response.text();
         const formattedQuizzes = parseCSVtoQuizzes(csvText);
 
         setApiQuizzes(formattedQuizzes);
-        
+
         // 載入資料後，設定預設的 Batch
         if (formattedQuizzes.length > 0) {
           const batches = Array.from(new Set(formattedQuizzes.map(q => q.batch)));
@@ -1624,29 +1658,35 @@ const QuizzesPage = () => {
   }, []);
 
   // 衍生狀態：取得所有不重複的 Batch 名稱 (移除 "全部" 選項)
-  const uniqueBatches = Array.from(new Set(apiQuizzes.map(q => q.batch))).sort();
-  
+  const uniqueBatches: string[] = Array.from(
+    new Set(apiQuizzes.map(q => q.batch))
+  ).sort();
+
   // 衍生狀態：根據當前選擇的 Batch 過濾題目
   const filteredQuizzes = apiQuizzes.filter(q => q.batch === selectedBatch);
 
-  // 切換 Batch 時，重置作答狀態與成績視窗
-  const handleBatchChange = (batch) => {
-    setSelectedBatch(batch);
-    setAnswersStatus({});
-    setShowResult(false);
-  };
+// 切換 Batch 時，重置作答狀態與成績視窗
+const handleBatchChange = (batch: string) => {
+  setSelectedBatch(batch);
+  setAnswersStatus({});
+  setShowResult(false);
+};
 
-  const handleAnswerSubmit = (qIndex, isCorrect) => {
-    setAnswersStatus(prev => ({
-      ...prev,
-      [qIndex]: isCorrect
-    }));
-  };
+// 使用者作答
+const handleAnswerSubmit = (
+  qIndex: number,
+  isCorrect: boolean
+) => {
+  setAnswersStatus(prev => ({
+    ...prev,
+    [qIndex]: isCorrect,
+  }));
+};
 
   // 注意：這裡的所有計算都基於「當前過濾後的題庫 (filteredQuizzes)」
   const totalAnswered = Object.keys(answersStatus).length;
   const isAllAnswered = filteredQuizzes.length > 0 && totalAnswered === filteredQuizzes.length;
-  
+
   const calculateScore = () => {
     if (filteredQuizzes.length === 0) return 0;
     const correctCount = Object.values(answersStatus).filter(Boolean).length;
@@ -1671,11 +1711,10 @@ const QuizzesPage = () => {
             <button
               key={batch}
               onClick={() => handleBatchChange(batch)}
-              className={`px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm ${
-                selectedBatch === batch 
-                  ? 'bg-blue-600 text-white shadow-blue-500/30 scale-105 ring-2 ring-blue-600 ring-offset-2 dark:ring-offset-slate-900' 
+              className={`px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm ${selectedBatch === batch
+                  ? 'bg-blue-600 text-white shadow-blue-500/30 scale-105 ring-2 ring-blue-600 ring-offset-2 dark:ring-offset-slate-900'
                   : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'
-              }`}
+                }`}
             >
               {batch}
             </button>
@@ -1685,7 +1724,7 @@ const QuizzesPage = () => {
 
       {/* 浮動成績結算按鈕 (取代原本佔空間的頂部進度條) */}
       {!isLoading && !fetchError && filteredQuizzes.length > 0 && (
-        <button 
+        <button
           onClick={() => setShowResult(true)}
           disabled={totalAnswered === 0}
           className="fixed bottom-24 right-5 md:bottom-10 md:right-10 z-[60] flex items-center gap-3 bg-blue-600 dark:bg-blue-500 disabled:bg-slate-400 dark:disabled:bg-slate-700 text-white px-5 py-3 md:px-6 md:py-3.5 rounded-full shadow-[0_10px_25px_-5px_rgba(37,99,235,0.4)] disabled:shadow-none transition-all hover:-translate-y-1 active:scale-95 group"
@@ -1695,10 +1734,10 @@ const QuizzesPage = () => {
             {/* 動態圓形進度環 */}
             <svg className="w-6 h-6 md:w-7 md:h-7 transform -rotate-90" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" fill="transparent" className="opacity-20" />
-              <circle 
-                cx="12" cy="12" r="10" 
-                stroke="currentColor" 
-                strokeWidth="3" 
+              <circle
+                cx="12" cy="12" r="10"
+                stroke="currentColor"
+                strokeWidth="3"
                 fill="transparent"
                 strokeDasharray="62.8"
                 strokeDashoffset={62.8 - (62.8 * (totalAnswered / filteredQuizzes.length))}
@@ -1735,9 +1774,9 @@ const QuizzesPage = () => {
         ) : (
           <>
             {filteredQuizzes.map((q, idx) => (
-              <QuizModule 
-                key={`${selectedBatch}-${idx}`} 
-                quizData={q} 
+              <QuizModule
+                key={`${selectedBatch}-${idx}`}
+                quizData={q}
                 unitTitle={`【${q.batch}】 第 ${idx + 1} 題`}
                 qIndex={idx}
                 onAnswer={handleAnswerSubmit}
@@ -1772,12 +1811,12 @@ const QuizzesPage = () => {
                 <p className="text-sm text-orange-500 font-bold mt-4">⚠️ 您還有 {filteredQuizzes.length - totalAnswered} 題尚未作答，成績僅供參考。</p>
               )}
             </div>
-            
+
             <div className="p-6 md:p-8 overflow-y-auto flex-1">
               <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
-                <BookOpen className="text-red-500 w-6 h-6"/> 錯題分析與複習 ({getIncorrectQuestions().length} 題)
+                <BookOpen className="text-red-500 w-6 h-6" /> 錯題分析與複習 ({getIncorrectQuestions().length} 題)
               </h3>
-              
+
               {getIncorrectQuestions().length === 0 ? (
                 <div className="text-center py-8 bg-emerald-50 dark:bg-emerald-900/10 rounded-2xl border border-emerald-100 dark:border-emerald-900/30">
                   <CheckCircle2 className="mx-auto w-12 h-12 text-emerald-500 mb-2" />
@@ -1804,7 +1843,7 @@ const QuizzesPage = () => {
             </div>
 
             <div className="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex justify-end">
-              <button 
+              <button
                 onClick={() => setShowResult(false)}
                 className="px-6 py-2.5 bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900 font-bold rounded-xl hover:bg-slate-700 dark:hover:bg-white transition-colors"
               >
@@ -1817,7 +1856,7 @@ const QuizzesPage = () => {
 
       {/* 展開/隱藏 擴充工具按鈕 */}
       <div className="mt-8 flex justify-center">
-        <button 
+        <button
           onClick={() => setShowImport(!showImport)}
           className="flex items-center gap-2 px-6 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors font-bold shadow-sm"
         >
@@ -1829,7 +1868,7 @@ const QuizzesPage = () => {
       {/* 隱藏/展開的擴充區塊 (條件渲染) */}
       {showImport && (
         <div className="mt-6 space-y-6 animate-in slide-in-from-top-4 duration-300">
-          
+
           {/* NotebookLM 提示詞區塊 */}
           <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-700">
             <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
@@ -1838,20 +1877,20 @@ const QuizzesPage = () => {
             <p className="text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
               請複製下方提示詞至 NotebookLM 產生新考題，並將結果貼入下方的 Google Sheet 題庫中。重新整理本網頁即可載入新題庫！
             </p>
-            
+
             <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
               <code className="text-sm text-emerald-800 dark:text-emerald-300 select-all block bg-emerald-50 dark:bg-emerald-900/30 p-4 rounded-lg border border-emerald-100 dark:border-emerald-800/50 font-mono overflow-x-auto whitespace-pre-wrap">
-                請根據來源的文件，幫我出 50 題中難度的選擇題，必須不同於之前的考題。請嚴格遵守以下輸出格式要求：<br/><br/>
-                格式類型：請以 CSV 純文字 格式輸出，每一題必須獨立成行（必須有換行符號）。欄位之間請使用 分號 ( ; ) 分隔。<br/>
-                欄位順序：請嚴格遵守以下順序：question;option_0;option_1;option_2;option_3;answer;explanation<br/>
-                內容限制：<br/>
-                禁止 加上任何 Markdown 標記（如 ``` 或表格符號）。<br/>
-                禁止 出現任何斷行或換行符號，每一題必須完整佔用且僅佔用一行。<br/>
-                禁止 輸出任何前言或結語（例如「以下是為您準備的題目...」）。<br/>
-                標點符號：題目或解析中若有逗號請保留，但絕對不可出現分號 ( ; )，若內容有分號請改用全形「；」。<br/>
-                欄位內容：<br/>
-                answer：請提供正確答案的索引數字（0 代表第一個選項，1 代表第二個，依此類推）。<br/>
-                explanation：請提供簡短精確的解析。<br/>
+                請根據來源的文件，幫我出 50 題中難度的選擇題，必須不同於之前的考題。請嚴格遵守以下輸出格式要求：<br /><br />
+                格式類型：請以 CSV 純文字 格式輸出，每一題必須獨立成行（必須有換行符號）。欄位之間請使用 分號 ( ; ) 分隔。<br />
+                欄位順序：請嚴格遵守以下順序：question;option_0;option_1;option_2;option_3;answer;explanation<br />
+                內容限制：<br />
+                禁止 加上任何 Markdown 標記（如 ``` 或表格符號）。<br />
+                禁止 出現任何斷行或換行符號，每一題必須完整佔用且僅佔用一行。<br />
+                禁止 輸出任何前言或結語（例如「以下是為您準備的題目...」）。<br />
+                標點符號：題目或解析中若有逗號請保留，但絕對不可出現分號 ( ; )，若內容有分號請改用全形「；」。<br />
+                欄位內容：<br />
+                answer：請提供正確答案的索引數字（0 代表第一個選項，1 代表第二個，依此類推）。<br />
+                explanation：請提供簡短精確的解析。<br />
                 請直接開始輸出這 50 題，並轉換為標準的 CSV 檔案格式
               </code>
             </div>
@@ -1867,9 +1906,9 @@ const QuizzesPage = () => {
                 本系統的預設測驗題庫同步自公開的 Google Sheet。點擊按鈕開啟表單，將 NotebookLM 產生的 CSV 內容貼入其中，即可全域更新本系統的測驗內容。
               </p>
             </div>
-            <a 
-              href="[https://docs.google.com/spreadsheets/d/1GCZzVzDr4Ne8qLdXjh23H_-smpM125GxmjzXOK1zu2A/edit?usp=sharing](https://docs.google.com/spreadsheets/d/1GCZzVzDr4Ne8qLdXjh23H_-smpM125GxmjzXOK1zu2A/edit?usp=sharing)" 
-              target="_blank" 
+            <a
+              href="https://docs.google.com/spreadsheets/d/1GCZzVzDr4Ne8qLdXjh23H_-smpM125GxmjzXOK1zu2A/edit?usp=sharing"
+              target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg flex items-center gap-2 whitespace-nowrap"
             >
@@ -1890,98 +1929,97 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('sec1');
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-useEffect(() => {
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    setIsDarkMode(true);
-  }
-}, []);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setIsDarkMode(true);
+    }
+  }, []);
 
-useEffect(() => {
-  document.documentElement.classList.toggle("dark", isDarkMode);
-}, [isDarkMode]);
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDarkMode);
+  }, [isDarkMode]);
 
   const navItems = [
-    { id: 'sec1', icon: <Globe size={20}/>, label: '政策與法規' },
-    { id: 'sec2', icon: <CheckCircle2 size={20}/>, label: 'ISO與盤查' },
-    { id: 'sec3', icon: <Map size={20}/>, label: '氣候治理' },
-    { id: 'sec4', icon: <CircleDollarSign size={20}/>, label: '金融與碳權' },
-    { id: 'dashboard', icon: <Target size={20}/>, label: '台灣淨零' },
-    { id: 'dict', icon: <BookOpen size={20}/>, label: '必備辭典' },
-    { id: 'quizzes', icon: <ClipboardCheck size={20}/>, label: '實戰測驗' },
+    { id: 'sec1', icon: <Globe size={20} />, label: '政策與法規' },
+    { id: 'sec2', icon: <CheckCircle2 size={20} />, label: 'ISO與盤查' },
+    { id: 'sec3', icon: <Map size={20} />, label: '氣候治理' },
+    { id: 'sec4', icon: <CircleDollarSign size={20} />, label: '金融與碳權' },
+    { id: 'dashboard', icon: <Target size={20} />, label: '台灣淨零' },
+    { id: 'dict', icon: <BookOpen size={20} />, label: '必備辭典' },
+    { id: 'quizzes', icon: <ClipboardCheck size={20} />, label: '實戰測驗' },
   ];
 
   return (
-          <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] font-sans text-slate-900 dark:text-slate-100 pb-24 transition-colors duration-300">
-        
-        {/* Navbar */}
-        <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm transition-colors duration-300">
-          <div className="max-w-7xl mx-auto px-4 py-3 lg:py-5 relative">
-            
-            <div className="absolute right-4 top-3 lg:top-5 z-10">
-              <button 
-                onClick={() => setIsDarkMode(!isDarkMode)} 
-                className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-yellow-400 hover:scale-105 transition-all shadow-sm"
-                aria-label="切換深色模式"
-              >
-                {isDarkMode ? <Sun size={20}/> : <Moon size={20}/>}
-              </button>
-            </div>
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] font-sans text-slate-900 dark:text-slate-100 pb-24 transition-colors duration-300">
 
-            <div className="flex items-center justify-center gap-2 text-emerald-800 dark:text-emerald-400 font-black text-xl lg:text-2xl tracking-wide pr-12 lg:pr-0">
-              <div className="bg-emerald-100 dark:bg-emerald-900/30 p-1.5 rounded-lg"><Leaf className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-600 dark:text-emerald-400 fill-current" /></div>
-              <span className="hidden sm:inline">淨零碳規劃管理</span>
-              <span className="sm:hidden">淨零碳規劃</span>
-            </div>
-            
-            <div className="hidden lg:flex justify-center flex-wrap gap-2 mt-4">
-               {navItems.map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${
-                      activeTab === item.id 
-                        ? 'bg-emerald-600 text-white shadow-md transform scale-105' 
-                        : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400'
-                    }`}
-                  >
-                    {item.icon}
-                    {item.label}
-                  </button>
-               ))}
-            </div>
-          </div>
-        </nav>
+      {/* Navbar */}
+      <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 py-3 lg:py-5 relative">
 
-        {/* Mobile Nav */}
-        <div className="lg:hidden fixed bottom-0 w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex overflow-x-auto z-50 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] hide-scrollbar transition-colors duration-300">
-          {navItems.map(item => (
+          <div className="absolute right-4 top-3 lg:top-5 z-10">
             <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`flex-1 min-w-[75px] py-4 px-1 flex flex-col items-center justify-center gap-1.5 text-[10px] font-black transition-colors ${
-                activeTab === item.id 
-                ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-900/20' 
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-yellow-400 hover:scale-105 transition-all shadow-sm"
+              aria-label="切換深色模式"
+            >
+              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+          </div>
+
+          <div className="flex items-center justify-center gap-2 text-emerald-800 dark:text-emerald-400 font-black text-xl lg:text-2xl tracking-wide pr-12 lg:pr-0">
+            <div className="bg-emerald-100 dark:bg-emerald-900/30 p-1.5 rounded-lg"><Leaf className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-600 dark:text-emerald-400 fill-current" /></div>
+            <span className="hidden sm:inline">淨零碳規劃管理</span>
+            <span className="sm:hidden">淨零碳規劃</span>
+          </div>
+
+          <div className="hidden lg:flex justify-center flex-wrap gap-2 mt-4">
+            {navItems.map(item => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${activeTab === item.id
+                    ? 'bg-emerald-600 text-white shadow-md transform scale-105'
+                    : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400'
+                  }`}
+              >
+                {item.icon}
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Nav */}
+      <div className="lg:hidden fixed bottom-0 w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex overflow-x-auto z-50 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] hide-scrollbar transition-colors duration-300">
+        {navItems.map(item => (
+          <button
+            key={item.id}
+            onClick={() => setActiveTab(item.id)}
+            className={`flex-1 min-w-[75px] py-4 px-1 flex flex-col items-center justify-center gap-1.5 text-[10px] font-black transition-colors ${activeTab === item.id
+                ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-900/20'
                 : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
               }`}
-            >
-              {item.icon}
-              <span className="truncate w-full text-center">{item.label}</span>
-            </button>
-          ))}
-        </div>
+          >
+            {item.icon}
+            <span className="truncate w-full text-center">{item.label}</span>
+          </button>
+        ))}
+      </div>
 
-        {/* Main Content Area */}
-        <main className="max-w-5xl mx-auto px-5 py-8 md:py-12">
-          {activeTab === 'sec1' && <Section1 />}
-          {activeTab === 'sec2' && <Section2 />}
-          {activeTab === 'sec3' && <Section3 />}
-          {activeTab === 'sec4' && <Section4 />}
-          {activeTab === 'dashboard' && <Dashboard />}
-          {activeTab === 'dict' && <Dictionary />}
-          {activeTab === 'quizzes' && <QuizzesPage />}
-        </main>
+      {/* Main Content Area */}
+      <main className="max-w-5xl mx-auto px-5 py-8 md:py-12">
+        {activeTab === 'sec1' && <Section1 />}
+        {activeTab === 'sec2' && <Section2 />}
+        {activeTab === 'sec3' && <Section3 />}
+        {activeTab === 'sec4' && <Section4 />}
+        {activeTab === 'dashboard' && <Dashboard />}
+        {activeTab === 'dict' && <Dictionary />}
+        {activeTab === 'quizzes' && <QuizzesPage />}
+      </main>
 
-        <style dangerouslySetInnerHTML={{__html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
           .hide-scrollbar::-webkit-scrollbar {
             display: none;
           }
